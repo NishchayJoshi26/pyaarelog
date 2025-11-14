@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gang Info</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;600;900&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4, #a18cd1, #fbc2eb);
+      background-size: 400% 400%;
+      animation: gradientMove 12s ease infinite;
+      font-family: "Poppins", sans-serif;
+      color: white;
+      text-align: center;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    h1 {
+      font-family: "Pacifico", cursive;
+      font-size: 4rem;
+      margin-top: 30px;
+      text-shadow: 3px 3px 20px rgba(0,0,0,0.4);
+    }
+
+    h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+    }
+
+    img {
+      width: 70%;
+      max-width: 600px;
+      border-radius: 30px;
+      margin-top: 20px;
+      border: 6px solid white;
+      box-shadow: 0 0 20px rgba(255,255,255,0.7);
+    }
+
+    .back-btn {
+      margin-top: 40px;
+      font-size: 1.5rem;
+      padding: 12px 25px;
+      background: white;
+      color: #ff3e96;
+      border-radius: 15px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .back-btn:hover {
+      transform: scale(1.1);
+      background: #ffe6f2;
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1 id="memberName"></h1>
+  <h2 id="gangName"></h2>
+  <img id="gangImage" src="">
+
+  <button class="back-btn" onclick="goBack()">⬅ Go Back</button>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const member = urlParams.get("member");
+
+    document.getElementById("memberName").innerText = member;
+
+    const kalluGang = ["iruuuuuuuu", "nishchay"];
+
+    if (kalluGang.includes(member)) {
+      document.getElementById("gangName").innerText = "Kallu Gang 💀🔥";
+      document.getElementById("gangImage").src = "images/kallu_gang.jpg";
+    } else {
+      document.getElementById("gangName").innerText = "Unganged 😎✨";
+      document.getElementById("gangImage").src = "images/unganged.jpg";
+    }
+
+    function goBack() {
+      window.location.href = "index.html";
+    }
+  </script>
+
+</body>
+</html>
