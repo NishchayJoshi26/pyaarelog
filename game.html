@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pyaarelog Game</title>
+
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+    background: linear-gradient(135deg, #3b0014, #770022, #ff0037, #3b0014);
+    background-size: 400% 400%;
+    animation: bgMove 10s infinite;
+    font-family: Poppins, sans-serif;
+    color: white;
+  }
+
+  @keyframes bgMove {
+    0% { background-position: 0 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0 50%; }
+  }
+
+  /* PRO MENU */
+  #menu {
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255,255,255,0.08);
+    padding: 16px 20px;
+    border-radius: 16px;
+    backdrop-filter: blur(8px);
+    border: 2px solid rgba(255,255,255,0.22);
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    animation: fadeIn .8s ease;
+    z-index: 20;
+  }
+
+  select, button {
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: none;
+    font-weight: 700;
+    background: rgba(255,255,255,0.3);
+    color: #2a0010;
+    cursor: pointer;
+  }
+
+  #gameCanvas {
+    background: rgba(255,255,255,0.1);
+    display: block;
+    margin: 120px auto 0;
+    border: 3px solid rgba(255,255,255,0.4);
+    border-radius: 14px;
+  }
+
+  /* MOBILE MENU */
+  @media (max-width: 650px) {
+    #menu {
+      width: 92%;
+      flex-direction: column;
+      padding: 12px;
+      gap: 10px;
+    }
+
+    select, button {
+      width: 100%;
+      font-size: 1rem;
+      padding: 12px;
+    }
+
+    #gameCanvas {
+      margin-top: 160px;
+      border-width: 2px;
+    }
+  }
+
+  /* RESTART POPUP */
+  #restartBox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(6px);
+    z-index: 99999;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #restartContent {
+    background: rgba(255,255,255,0.15);
+    padding: 28px;
+    border-radius: 16px;
+    text-align: center;
+    border: 2px solid rgba(255,255,255,0.3);
+    width: 80%;
+    max-width: 320px;
+  }
+
+  /* FIRE PARTICLES */
+  .fire {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  @media (max-width:700px) {
+    body::after, .comet, .comet-tail { display: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MENU -->
+<div id="menu">
+  <select id="charPick">
+    <option value="iruu.jpg">iruuuuuuuu</option>
+    <option value="vaanu.jpg">vaanuuuuuu</option>
+    <option value="sehaj.jpg">sehaj ji</option>
+    <option value="plk.jpg">plk</option>
+    <option value="yaju.jpg">yajuuuuu</option>
+    <option value="nishchay.jpg">nishchay</option>
+    <option value="mannu.jpg">mannnuuuuuu</option>
+  </select>
+
+  <button onclick="startGame()">Start Game</button>
+  <button onclick="location.href='index.html'">⬅ Back</button>
+</div>
+
+<!-- CANVAS -->
+<canvas id="gameCanvas"></canvas>
+
+<!-- RESTART POPUP -->
+<div id="restartBox">
+  <div id="restartContent">
+    <h2 style="margin:0 0 10px; font-size:1.8rem;">Game Over!</h2>
+    <p style="margin-bottom:20px;font-size:1.2rem;">Score: <span id="finalScore"></span></p>
+
+    <button id="restartBtn" style="
+      padding:12px 16px;
+      width:100%;
+      margin-bottom:10px;
+      border:none;
+      background:#ff0037;
+      color:white;
+      font-weight:700;
+      border-radius:10px;
+      font-size:1.1rem;
+    ">Restart</button>
+
+    <button onclick="location.href='index.html'" style="
+      padding:12px 16px;
+      width:100%;
+      border:none;
+      background:white;
+      color:#770022;
+      font-weight:700;
+      border-radius:10px;
+      font-size:1.1rem;
+    ">⬅ Back to Home</button>
+  </div>
+</div>
+
+
+<script>
+/* ======================================================
+   RESPONSIVE CANVAS
+====================================================== */
+function resizeCanvas() {
+  const c = document.getElementById("gameCanvas");
+
+  if (window.innerWidth < 550) {
+    c.width = window.innerWidth - 30;
+    c.height = window.innerHeight - 200;
+  } else {
+    c.width = 420;
+    c.height = 600;
+  }
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+/* ======================================================
+   GAME VARIABLES
+====================================================== */
+let canvas = document.getElementById("gameCanvas");
+let ctx = canvas.getContext("2d");
+
+let charImg = new Image();
+
+let bird = { x: 80, y: 250, w: 48, h: 48, vel: 0 };
+let pipes = [];
+
+let gravity = 0.24;
+let jumpPower = -5.5;
+let pipeSpeed = 1.6;
+let gapSize = 230;
+let spawnRate = 2000;
+
+let gameStarted = false;
+let score = 0;
+
+// FIRE TRAIL
+let fireParticles = [];
+
+function createFire() {
+  fireParticles.push({
+    x: bird.x,
+    y: bird.y + bird.h/2,
+    size: Math.random()*10 + 6,
+    alpha: 1,
+    vx: -Math.random()*2 - 1,
+    vy: (Math.random()-0.5)*1.2,
+    color: `rgba(${200+Math.random()*55}, ${50+Math.random()*70}, 0,`
+  });
+}
+
+/* MUSIC */
+let music = new Audio("music.mp3");
+music.loop = true;
+let musicStarted = false;
+
+document.addEventListener("click",()=>{
+  if(!musicStarted){ music.play().catch(()=>{}); musicStarted = true; }
+});
+document.addEventListener("keydown",()=>{
+  if(!musicStarted){ music.play().catch(()=>{}); musicStarted = true; }
+});
+
+/* START GAME */
+function startGame() {
+  charImg.src = "images/" + document.getElementById("charPick").value;
+  reset();
+  gameStarted = true;
+}
+
+/* RESET */
+function reset() {
+  bird.y = 250;
+  bird.vel = 0;
+  pipes = [];
+  score = 0;
+}
+
+/* SPAWN PIPES */
+function spawnPipe() {
+  let top = Math.random() * 220 + 50;
+  pipes.push({
+    x: canvas.width,
+    top: top,
+    bottom: top + gapSize,
+    scored: false
+  });
+}
+
+setInterval(() => {
+  if (gameStarted) spawnPipe();
+}, spawnRate);
+
+/* UPDATE LOOP */
+function update() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  if (gameStarted) {
+    bird.vel += gravity;
+    bird.y += bird.vel;
+  }
+
+  // FIRE TRAIL
+  createFire();
+
+  fireParticles.forEach(f => {
+    f.x += f.vx;
+    f.y += f.vy;
+    f.alpha -= 0.03;
+
+    ctx.fillStyle = f.color + f.alpha + ")";
+    ctx.beginPath();
+    ctx.arc(f.x, f.y, f.size, 0, Math.PI*2);
+    ctx.fill();
+  });
+
+  fireParticles = fireParticles.filter(f => f.alpha > 0);
+
+  // DRAW BIRD
+  ctx.drawImage(charImg, bird.x, bird.y, bird.w, bird.h);
+
+  // PIPES
+  pipes.forEach(p => {
+    p.x -= pipeSpeed;
+
+    ctx.fillStyle = "rgba(255,255,255,0.9)";
+    ctx.fillRect(p.x, 0, 60, p.top);
+    ctx.fillRect(p.x, p.bottom, 60, canvas.height - p.bottom);
+
+    if (p.x + 60 < bird.x && !p.scored) {
+      score++;
+      p.scored = true;
+    }
+
+    if (
+      bird.x < p.x + 60 &&
+      bird.x + bird.w > p.x &&
+      (bird.y < p.top || bird.y + bird.h > p.bottom)
+    ) {
+      return gameOver();
+    }
+  });
+
+  if (bird.y > canvas.height || bird.y < -20) return gameOver();
+
+  // SCORE
+  ctx.fillStyle = "white";
+  ctx.font = "24px Poppins";
+  ctx.fillText("Score: " + score, 12, 32);
+
+  requestAnimationFrame(update);
+}
+
+/* GAME OVER WITH POPUP */
+function gameOver() {
+  gameStarted = false;
+
+  document.getElementById("restartBox").style.display = "flex";
+  document.getElementById("finalScore").innerText = score;
+}
+
+/* RESTART BUTTON */
+document.getElementById("restartBtn").addEventListener("click", () => {
+  document.getElementById("restartBox").style.display = "none";
+  reset();
+  gameStarted = true;
+});
+
+/* CONTROLS */
+window.addEventListener("keydown", () => { 
+  bird.vel = jumpPower;
+  for(let i=0;i<6;i++) createFire();
+});
+window.addEventListener("mousedown", () => { 
+  bird.vel = jumpPower;
+  for(let i=0;i<6;i++) createFire();
+});
+window.addEventListener("touchstart", () => {
+  bird.vel = jumpPower;
+  for(let i=0;i<6;i++) createFire();
+});
+
+/* LOOP */
+update();
+</script>
+
+</body>
+</html>

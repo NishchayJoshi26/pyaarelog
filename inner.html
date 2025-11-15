@@ -1,100 +1,241 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gang Info</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Pyaarelog</title>
 
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;600;900&display=swap');
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;600;900&display=swap" rel="stylesheet">
 
-    body {
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #ff9a9e, #fad0c4, #a18cd1, #fbc2eb);
-      background-size: 400% 400%;
-      animation: gradientMove 12s ease infinite;
-      font-family: "Poppins", sans-serif;
-      color: white;
-      text-align: center;
+<style>
+  :root{
+    --bg1:#ff9a9e; 
+    --bg2:#fad0c4; 
+    --bg3:#a18cd1; 
+    --bg4:#fbc2eb;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    font-family:"Poppins",sans-serif;
+    color:#fff;
+    text-align:center;
+
+    background:linear-gradient(120deg,var(--bg1),var(--bg2),var(--bg3),var(--bg4));
+    background-size:400% 400%;
+    animation:moveBg 14s linear infinite;
+  }
+
+  @keyframes moveBg{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+  }
+
+  h1{
+    font-family:"Pacifico",cursive;
+    font-size:3.6rem;
+    margin-top:26px;
+    text-shadow:0 8px 26px rgba(0,0,0,.35);
+  }
+
+  h2{
+    font-size:2.2rem;
+    margin-top:6px;
+    text-shadow:0 6px 14px rgba(0,0,0,.28);
+  }
+
+  .img-wrap{
+    margin:20px auto;
+    max-width:900px;
+    padding:18px;
+  }
+
+  .bigimg{
+    width:100%;
+    border-radius:20px;
+    border:6px solid rgba(255,255,255,0.12);
+    box-shadow:0 26px 60px rgba(0,0,0,.45);
+  }
+
+  .back{
+    margin:16px auto;
+    display:inline-block;
+    padding:12px 22px;
+    border-radius:14px;
+    background:#fff;
+    color:#ff2e7a;
+    font-weight:700;
+    border:none;
+    cursor:pointer;
+    box-shadow:0 8px 20px rgba(0,0,0,.2);
+  }
+
+  .star{
+    position:fixed;
+    width:12px;
+    height:12px;
+    border-radius:50%;
+  }
+
+  /* MOBILE OPTIMIZATION */
+  @media (max-width:600px) {
+
+    h1{
+      font-size:2.4rem;
+      margin-top:12px;
     }
 
-    @keyframes gradientMove {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    h2{
+      font-size:1.4rem;
+      margin-bottom:12px;
     }
 
-    h1 {
-      font-family: "Pacifico", cursive;
-      font-size: 4rem;
-      margin-top: 30px;
-      text-shadow: 3px 3px 20px rgba(0,0,0,0.4);
+    .img-wrap{
+      padding:10px;
     }
 
-    h2 {
-      font-size: 2.5rem;
-      margin-bottom: 20px;
-      text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+    .bigimg{
+      border-radius:14px;
+      border-width:4px;
     }
 
-    img {
-      width: 70%;
-      max-width: 600px;
-      border-radius: 30px;
-      margin-top: 20px;
-      border: 6px solid white;
-      box-shadow: 0 0 20px rgba(255,255,255,0.7);
+    .back{
+      width:90%;
+      font-size:1rem;
+      padding:12px;
     }
+  }
 
-    .back-btn {
-      margin-top: 40px;
-      font-size: 1.5rem;
-      padding: 12px 25px;
-      background: white;
-      color: #ff3e96;
-      border-radius: 15px;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-      transition: 0.3s;
+  /* Disable fancy cursor on mobile */
+  @media (max-width:700px){
+    .comet,
+    .comet-tail{
+      display:none !important;
     }
-
-    .back-btn:hover {
-      transform: scale(1.1);
-      background: #ffe6f2;
+    body::after{
+      display:none !important;
     }
+  }
 
-  </style>
+  /* COMET for desktop */
+  .comet{
+    position:fixed;
+    width:16px;
+    height:16px;
+    background:radial-gradient(circle,#ff0037,transparent);
+    border-radius:50%;
+    pointer-events:none;
+    z-index:9999;
+  }
+
+  .comet-tail{
+    position:fixed;
+    background:radial-gradient(circle,#ff6a00,transparent);
+    border-radius:50%;
+    pointer-events:none;
+    z-index:9998;
+  }
+
+</style>
 </head>
+
 <body>
 
-  <h1 id="memberName"></h1>
-  <h2 id="gangName"></h2>
-  <img id="gangImage" src="">
+<h1 id="member">Member</h1>
+<h2 id="gangname">Gang</h2>
 
-  <button class="back-btn" onclick="goBack()">⬅ Go Back</button>
+<div class="img-wrap">
+  <img id="big" class="bigimg" src="" alt="group image">
+</div>
 
-  <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const member = urlParams.get("member");
+<button class="back" onclick="goBack()">⬅ Back</button>
 
-    document.getElementById("memberName").innerText = member;
+<script>
+/* FETCH MEMBER FROM URL */
+const url = new URL(location.href);
+const member = url.searchParams.get("member") || "unknown";
 
-    const kalluGang = ["iruuuuuuuu", "nishchay"];
+document.getElementById("member").innerText = member;
 
-    if (kalluGang.includes(member)) {
-      document.getElementById("gangName").innerText = "Kallu Gang 💀🔥";
-      document.getElementById("gangImage").src = "images/kallu_gang.jpg";
-    } else {
-      document.getElementById("gangName").innerText = "Unganged 😎✨";
-      document.getElementById("gangImage").src = "images/unganged.jpg";
-    }
+const kallu = ["iruuuuuuuu","nishchay"];
+const gangNameEl = document.getElementById("gangname");
+const big = document.getElementById("big");
 
-    function goBack() {
-      window.location.href = "index.html";
-    }
-  </script>
+if(kallu.includes(member)){
+  gangNameEl.innerText = "Kallu Gang 💀🔥";
+  big.src = "images/kallu_gang.jpg";
+  setTimeout(()=>launchStars(),400);
+}else{
+  gangNameEl.innerText = "Unganged 😎✨";
+  big.src = "images/unganged.jpg";
+  setTimeout(()=>launchStars(),200);
+}
+
+function goBack(){
+  location.href="index.html";
+}
+
+/* STARS ANIMATION */
+function launchStars(){
+  for(let i=0;i<18;i++){
+    const s=document.createElement("div");
+    s.className="star";
+    s.style.left = (10+Math.random()*80)+"vw";
+    s.style.top  = (20+Math.random()*40)+"vh";
+    s.style.background = ["#ffd166","#fca311","#ff6ec4","#7bf1a8"][Math.floor(Math.random()*4)];
+    document.body.appendChild(s);
+
+    const dur = 800 + Math.random()*1200;
+
+    s.animate([
+      { transform:`translateY(0) rotate(${Math.random()*360}deg)`, opacity:1 },
+      { transform:`translateY(${200+Math.random()*120}px) rotate(${Math.random()*720}deg)`, opacity:0 }
+    ], {duration:dur, easing:"cubic-bezier(.2,.8,.2,1)"});
+
+    setTimeout(()=>s.remove(), dur+50);
+  }
+}
+
+/* CURSOR EFFECTS FOR DESKTOP */
+if (window.innerWidth > 700) {
+
+  document.addEventListener("mousemove", e => {
+    document.body.style.setProperty("--x", e.clientX + "px");
+    document.body.style.setProperty("--y", e.clientY + "px");
+  });
+
+  const comet = document.createElement("div");
+  comet.className="comet";
+  document.body.appendChild(comet);
+
+  document.addEventListener("mousemove", e => {
+    comet.style.left = e.clientX + "px";
+    comet.style.top  = e.clientY + "px";
+    createCometTail(e.clientX, e.clientY);
+  });
+
+  function createCometTail(x,y){
+    const t=document.createElement("div");
+    t.className="comet-tail";
+    t.style.left=x+"px";
+    t.style.top =y+"px";
+
+    let size=Math.random()*10+5;
+    t.style.width = size+"px";
+    t.style.height=size+"px";
+
+    document.body.appendChild(t);
+
+    setTimeout(()=>{
+      t.style.opacity=0;
+      setTimeout(()=>t.remove(),200);
+    },40);
+  }
+}
+</script>
 
 </body>
 </html>

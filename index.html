@@ -1,114 +1,253 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pyaarelog</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Lobster&family=Poppins:wght@300;600;900&display=swap');
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Pyaarelog</title>
 
-    body {
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #ff6ec4, #7873f5, #4ade80, #ffcc70);
-      background-size: 400% 400%;
-      animation: gradientMove 10s ease infinite;
-      font-family: 'Poppins', sans-serif;
-      color: white;
-      text-align: center;
-    }
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;600;900&display=swap" rel="stylesheet">
 
-    @keyframes gradientMove {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
+<style>
+/* EXTRA MOBILE UPGRADES ONLY FOR INDEX PAGE */
 
-    h1 {
-      font-family: 'Lobster', cursive;
-      font-size: 5rem;
-      letter-spacing: 5px;
-      text-shadow: 5px 5px 20px rgba(0,0,0,0.4);
-      margin-bottom: 40px;
-    }
+/* Responsive Title */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 3rem;
+    margin-top: 12px;
+  }
+}
 
-    .container {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 30px;
-      padding: 40px;
-    }
+/* Card grid responsiveness */
+@media (max-width: 600px) {
+  .container {
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 18px;
+    padding: 10px;
+  }
 
-    .person {
-      cursor: pointer;
-      transition: transform 0.3s, filter 0.3s;
-    }
+  .card {
+    padding: 12px;
+  }
 
-    .person:hover {
-      transform: scale(1.1);
-      filter: drop-shadow(0 0 15px white);
-    }
+  .avatar {
+    width: 130px;
+    height: 130px;
+    border-radius: 16px;
+  }
 
-    img {
-      width: 230px;
-      height: 230px;
-      border-radius: 25px;
-      border: 4px solid white;
-      object-fit: cover;
-    }
+  .label {
+    font-size: 0.95rem;
+  }
+}
 
-    .name {
-      margin-top: 10px;
-      font-size: 1.6rem;
-      font-weight: 700;
-      text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-    }
-  </style>
+/* Button responsiveness */
+@media (max-width: 600px) {
+  .btn {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    width: 130px;
+  }
+
+  .top-controls {
+    gap: 10px;
+  }
+}
+
+/* Popup mobile view */
+@media (max-width: 600px) {
+  .modal {
+    width: 92% !important;
+    padding: 16px !important;
+  }
+
+  .modal h2 {
+    font-size: 1.8rem;
+  }
+
+  .modal p {
+    font-size: 1rem;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
+
+/* Disable comet cursor on mobile (better performance) */
+@media (max-width: 700px) {
+  .comet,
+  .comet-tail {
+    display: none !important;
+  }
+
+  body::after {
+    display: none !important;
+  }
+}
+</style>
+
 </head>
 <body>
+
+<script>
+// Floating particles
+for (let i = 0; i < 25; i++) {
+  const p = document.createElement("div");
+  p.className = "particle";
+  p.style.left = Math.random() * 100 + "%";
+  p.style.top = Math.random() * 100 + "%";
+  p.style.animationDuration = 5 + Math.random() * 5 + "s";
+  document.body.appendChild(p);
+}
+</script>
+
+<header>
   <h1>Pyaarelog</h1>
 
-  <div class="container">
-    <div class="person" onclick="openPage('iruuuuuuuu')">
-      <img src="images/iruu.jpg" />
-      <div class="name">iruuuuuuuu</div>
-    </div>
-
-    <div class="person" onclick="openPage('vaanuuuuuu')">
-      <img src="images/vaanu.jpg" />
-      <div class="name">vaanuuuuuu</div>
-    </div>
-
-    <div class="person" onclick="openPage('sehaj')">
-      <img src="images/sehaj.jpg" />
-      <div class="name">sehaj ji</div>
-    </div>
-
-    <div class="person" onclick="openPage('plk')">
-      <img src="images/plk.jpg" />
-      <div class="name">plk</div>
-    </div>
-
-    <div class="person" onclick="openPage('yajuuuuu')">
-      <img src="images/yaju.jpg" />
-      <div class="name">yajuuuuu</div>
-    </div>
-
-    <div class="person" onclick="openPage('nishchay')">
-      <img src="images/nishchay.jpg" />
-      <div class="name">nishchay</div>
-    </div>
-
-    <div class="person" onclick="openPage('mannnuuuuuu')">
-      <img src="images/mannu.jpg" />
-      <div class="name">mannnuuuuuu</div>
-    </div>
+  <div class="top-controls">
+    <button class="btn" onclick="location.href='game.html'">🎮 Play Game</button>
   </div>
+</header>
 
-  <script>
-    function openPage(person) {
-      window.location.href = `inner.html?member=${person}`;
-    }
-  </script>
+<main>
+  <div class="container">
+
+    <div class="card" onclick="openPopup('iruuuuuuuu')">
+      <img class="avatar" src="images/iruu.jpg">
+      <div class="label">iruuuuuuuu</div>
+    </div>
+
+    <div class="card" onclick="openPopup('vaanuuuuuu')">
+      <img class="avatar" src="images/vaanu.jpg">
+      <div class="label">vaanuuuuuu</div>
+    </div>
+
+    <div class="card" onclick="openPopup('sehaj')">
+      <img class="avatar" src="images/sehaj.jpg">
+      <div class="label">sehaj ji</div>
+    </div>
+
+    <div class="card" onclick="openPopup('plk')">
+      <img class="avatar" src="images/plk.jpg">
+      <div class="label">plk</div>
+    </div>
+
+    <div class="card" onclick="openPopup('yajuuuuu')">
+      <img class="avatar" src="images/yaju.jpg">
+      <div class="label">yajuuuuu</div>
+    </div>
+
+    <div class="card" onclick="openPopup('nishchay')">
+      <img class="avatar" src="images/nishchay.jpg">
+      <div class="label">nishchay</div>
+    </div>
+
+    <div class="card" onclick="openPopup('mannnuuuuuu')">
+      <img class="avatar" src="images/mannu.jpg">
+      <div class="label">mannnuuuuuu</div>
+    </div>
+
+  </div>
+</main>
+
+<!-- POPUP -->
+<div class="modal-wrap" id="modalWrap">
+  <div class="modal">
+    <h2 id="modalTitle"></h2>
+    <p id="modalText"></p>
+    <button class="btn" onclick="closePopup()">Close</button>
+    <button class="btn" onclick="goNext()">Proceed →</button>
+  </div>
+</div>
+
+
+<script>
+// Funny messages
+const popups = {
+  "iruuuuuuuu": "iruu says: I steal socks and hearts ❤️",
+  "vaanuuuuuu": "vaanu says: I eat samosas daily 😋",
+  "sehaj": "sehaj says: Selfie queen vibes 📸",
+  "plk": "plk says: Meme king 😂",
+  "yajuuuuu": "yaju says: Dramatic entry 100% 🎭",
+  "nishchay": "nishchay says: Nap specialist 😴",
+  "mannnuuuuuu": "mannu says: Chairs fear me 💺🔥"
+};
+
+let currentPerson = null;
+
+function openPopup(id) {
+  currentPerson = id;
+  document.getElementById("modalTitle").innerText = id;
+  document.getElementById("modalText").innerText = popups[id];
+  document.getElementById("modalWrap").style.display = "flex";
+}
+
+function closePopup() {
+  document.getElementById("modalWrap").style.display = "none";
+}
+
+function goNext() {
+  location.href = "inner.html?member=" + currentPerson;
+}
+
+// Autoplay music
+let audio = new Audio("music.mp3");
+audio.loop = true;
+let started = false;
+
+document.addEventListener("click", () => {
+  if (!started) {
+    audio.play().catch(() => { });
+    started = true;
+  }
+});
+document.addEventListener("keydown", () => {
+  if (!started) {
+    audio.play().catch(() => { });
+    started = true;
+  }
+});
+
+// Cursor effects removed for mobile
+document.addEventListener("mousemove", e => {
+  if (window.innerWidth > 700) {
+    document.body.style.setProperty("--x", e.clientX + "px");
+    document.body.style.setProperty("--y", e.clientY + "px");
+  }
+});
+
+// Comet cursor
+if (window.innerWidth > 700) {
+  const comet = document.createElement("div");
+  comet.className = "comet";
+  document.body.appendChild(comet);
+
+  document.addEventListener("mousemove", (e) => {
+    comet.style.left = e.clientX + "px";
+    comet.style.top = e.clientY + "px";
+    createCometTail(e.clientX, e.clientY);
+  });
+
+  function createCometTail(x, y) {
+    const tail = document.createElement("div");
+    tail.className = "comet-tail";
+    tail.style.left = x + "px";
+    tail.style.top = y + "px";
+
+    document.body.appendChild(tail);
+    let size = Math.random() * 10 + 5;
+    tail.style.width = size + "px";
+    tail.style.height = size + "px";
+
+    setTimeout(() => {
+      tail.style.opacity = 0;
+      setTimeout(() => tail.remove(), 200);
+    }, 30);
+  }
+}
+</script>
+
 </body>
 </html>
